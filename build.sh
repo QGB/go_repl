@@ -1,12 +1,16 @@
 set -x  # ECHO on
-#go get github.com/google/shlex github.com/gliderlabs/ssh
+
 export GOPROXY=https://goproxy.cn
 
 touch go.sum
 go mod tidy
 
 go get
-export CGO_ENABLED=0 GOOS=linux GOARCH=arm64 ;go build -trimpath -ldflags "-s -w -buildid=" -o repl-${GOOS}-$GOARCH
-export CGO_ENABLED=0 GOOS=linux GOARCH=arm   ;go build -trimpath -ldflags "-s -w -buildid=" -o repl-${GOOS}-$GOARCH
-export CGO_ENABLED=0 GOOS=linux GOARCH=amd64 ;go build -trimpath -ldflags "-s -w -buildid=" -o repl-${GOOS}-$GOARCH
+
+export BUILD_COMMAND='go build -trimpath -ldflags "-s -w -buildid=" -buildvcs=false -o'
+#golang 1.20  -buildvcs=false 
+
+export CGO_ENABLED=0 GOOS=linux GOARCH=amd64 ;eval $BUILD_COMMAND repl-$GOOS-$GOARCH
+export CGO_ENABLED=0 GOOS=linux GOARCH=arm   ;eval $BUILD_COMMAND repl-$GOOS-$GOARCH
+export CGO_ENABLED=0 GOOS=linux GOARCH=arm64 ;eval $BUILD_COMMAND repl-$GOOS-$GOARCH
 
